@@ -1,5 +1,6 @@
 package com.wino.basicscodelabtutorial
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -18,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wino.basicscodelabtutorial.ui.theme.BasicsCodelabTutorialTheme
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +98,12 @@ fun Greeting(name: String) {
                 .weight(1f)
                 .padding(bottom = extraPadding.coerceAtLeast(0.dp))) {
                 Text(text = "Hello, ")
-                Text(text = name)
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.h4.copy(
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
             }
             OutlinedButton(onClick = { expanded = !expanded }) {
                 Text(if(expanded) "Show less" else "Show more")
@@ -105,7 +112,12 @@ fun Greeting(name: String) {
     }
 }
 
-@Preview(showBackground = true, name = "MyApp preview", widthDp = 320)
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
 @Composable
 fun DefaultPreview() {
     BasicsCodelabTutorialTheme {
