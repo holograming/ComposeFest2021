@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ private fun MyApp(names: List<String> = listOf("World", "Compose")) {
     // @Compose가 state/event에 의해 recompose가 발생되면, 상태가 변경되어야 하는데,
     // 이를 위해 mutableState 객체를 이용해 상태를 관리하도록 하고,
     // 해당 함수에서는 변경된 상태값만 readable로 사용하기 위함.
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     if(shouldShowOnboarding) {
         OnboardingScreen(onContinueClicked = {shouldShowOnboarding = false})
@@ -44,7 +45,7 @@ private fun MyApp(names: List<String> = listOf("World", "Compose")) {
 @Composable
 fun OnboardingScreen(onContinueClicked: () -> Unit) {
 
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     Surface {
         Column(
@@ -74,7 +75,7 @@ fun Greetings(names: List<String> = List(1000) { "$it" }) {
 
 @Composable
 fun Greeting(name: String) {
-    val expanded = remember { mutableStateOf(false) }
+    val expanded = rememberSaveable { mutableStateOf(false) }
     val extraPadding = if(expanded.value) 48.dp else 0.dp
 
     Surface(color = MaterialTheme.colors.primary,
@@ -109,4 +110,4 @@ fun OnboardingPreview() {
     BasicsCodelabTutorialTheme {
         OnboardingScreen(onContinueClicked = {}) // Do nothing on click.
     }
-}
+}ㅡm
