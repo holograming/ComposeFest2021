@@ -38,6 +38,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LayoutsCodelabPreview() {
     LayoutsTutorialTheme {
-        //SimpleList()
+        LayoutsCodelabScaffold()
     }
 }
