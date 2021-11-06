@@ -1,7 +1,10 @@
 package com.wino.layoutstutorial
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -11,6 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wino.layoutstutorial.ui.theme.LayoutsTutorialTheme
 import com.wino.layoutstutorial.ui.theme.Purple200
+
+val topics = listOf(
+    "Arts & Crafts", "Beauty", "Books", "Business", "Comics", "Culinary",
+    "Design", "Fashion", "Film", "History", "Maths", "Music", "People", "Philosophy",
+    "Religion", "Social sciences", "Technology", "TV", "Writing"
+)
 
 @Composable
 fun LayoutsCodelabScaffold() {
@@ -40,9 +49,12 @@ fun LayoutsCodelabScaffold() {
 
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text(text = "Hi there!")
-        Text(text = "Thanks for going through the Layouts codelab")
+    Row(modifier = modifier.horizontalScroll(rememberScrollState())) {
+        StaggeredGrid(modifier = modifier, rows = 5) {
+            for (topic in topics) {
+                Chip(modifier = Modifier.padding(8.dp), text = topic)
+            }
+        }
     }
 }
 
