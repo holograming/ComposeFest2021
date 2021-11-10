@@ -16,6 +16,7 @@
 
 package com.codelabs.state.todo
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,6 +27,7 @@ class TodoViewModel : ViewModel() {
     val todoItems: LiveData<List<TodoItem>> = _todoItems
 
     fun addItem(item: TodoItem) {
+        Log.d("dev", "addItem")
         _todoItems.value = _todoItems.value!! + listOf(item)
     }
 

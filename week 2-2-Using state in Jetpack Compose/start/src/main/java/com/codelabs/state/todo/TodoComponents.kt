@@ -16,6 +16,7 @@
 
 package com.codelabs.state.todo
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -210,6 +211,7 @@ fun TodoInputText(
     onImeAction: () -> Unit = {}
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    Log.d("dev", "TodoInputText")
     TextField(
         value = text,
         onValueChange = onTextChange,
