@@ -17,23 +17,51 @@
 package com.codelabs.state.todo
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class TodoViewModel : ViewModel() {
 
-    private var _todoItems = MutableLiveData(listOf<TodoItem>())
-    val todoItems: LiveData<List<TodoItem>> = _todoItems
+    //private var _todoItems = MutableLiveData(listOf<TodoItem>())
+    //val todoItems: LiveData<List<TodoItem>> = _todoItems
+
+    private var currentEditPosition by mutableStateOf(-1)
+
+    var todoItems = mutableStateListOf<TodoItem>()
+        private set
+
+    val currentEditItem: TodoItem?
+        get() = todoItems.getOrNull(currentEditPosition)
 
     fun addItem(item: TodoItem) {
-        Log.d("dev", "addItem")
-        _todoItems.value = _todoItems.value!! + listOf(item)
+        todoItems.add(item)
     }
 
     fun removeItem(item: TodoItem) {
-        _todoItems.value = _todoItems.value!!.toMutableList().also {
-            it.remove(item)
-        }
+        todoItems.remove(item)
+        onEditDone()
     }
+
+    // event: onEditItemSelected
+    fun onEditItemSelected(item: TodoItem){
+        currentEditPosition = todoItems.indexOf(item)
+    }
+
+    fun onEditDone() {
+        currentEditPosition = -1
+    }
+
+    fun onEditItemChange(item: TodoItem) {
+        /// Require : 조건이 맞지 않을때 예외를 발생함.
+        val currentItem = requireNotNull(currentEditItem)
+        require(currentItem.id == item.id) {
+            "You can only change an item with the same id as currentEditItem"
+        }
+
+        todoItems[currentEditPosition] = item
+    }
+
 }
