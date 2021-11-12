@@ -21,16 +21,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.codelabs.state.util.generateRandomTodoItem
@@ -46,19 +44,56 @@ import kotlin.random.Random
 @Composable
 fun TodoScreen(
     items: List<TodoItem>,
+    currentlyEditing: TodoItem?,
     onAddItem: (TodoItem) -> Unit,
-    onRemoveItem: (TodoItem) -> Unit
+    onRemoveItem: (TodoItem) -> Unit,
+    onStartEdit: (TodoItem) -> Unit,
+    onEditItemChange: (TodoItem) -> Unit,
+    onEditDone: () -> Unit
 ) {
     Column {
-        TodoItemInputBackground(elevate = true, modifier = Modifier.fillMaxWidth()) {
-            TodoItemEntryInput(onItemComplete = onAddItem)
+        /// current item이 없으면 올라오고
+        /// current item이 있으면 내려감
+        val enableTopSection = currentlyEditing == null
+        TodoItemInputBackground(elevate = enableTopSection) {
+            if(enableTopSection) {
+                TodoItemEntryInput(onItemComplete = onAddItem)
+            } else {
+                Text(
+                    "Editing item",
+                    style = MaterialTheme.typography.h6,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                )
+            }
         }
 
-        items.forEach { todo ->
-            TodoRow(todo = todo, onItemClicked = {}, modifier = Modifier.fillMaxWidth())
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(top = 8.dp)
+        ) {
+            items(items) { todo ->
+                if(currentlyEditing?.id == todo.id) { /// 수정모드일 경우,
+                    /// lineeditor 선택 아이템 수정 모드
+                    TodoItemInlineEditor(
+                        item = currentlyEditing,
+                        onEditItemChange = onEditItemChange,
+                        onEditDone = onEditDone,
+                        onRemoveItem = onRemoveItem
+                    ) 
+                } else {
+                    TodoRow(
+                        todo = todo,
+                        { onStartEdit(it) },
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
+            }
         }
     }
-
 }
 
 /**
@@ -122,6 +157,22 @@ fun TodoItemEntryInput (onItemComplete: (TodoItem) -> Unit) {
 }
 
 @Composable
+fun TodoItemInlineEditor(
+  item: TodoItem,
+  onEditItemChange: (TodoItem) -> Unit,
+  onEditDone: () -> Unit,
+  onRemoveItem: (TodoItem) -> Unit
+) = TodoItemInput(
+    text = item.task,
+    onTextChange = { onEditItemChange(item.copy(task = it)) }, // item.task 라서 task = it
+    icon = item.icon,
+    onIconChange = { onEditItemChange(item.copy(icon = it)) },  // item.icon 이라서 icon = it
+    submit = onEditDone,
+    iconsVisible = true
+) // inline 함수 사용시, 아래 함수가 있어야 함.
+
+
+@Composable
 fun TodoItemInput(
     text: String,
     onTextChange: (String) -> Unit,
@@ -173,7 +224,7 @@ fun PreviewTodoScreen() {
         TodoItem("Apply state", TodoIcon.Done),
         TodoItem("Build dynamic UIs", TodoIcon.Square)
     )
-    TodoScreen(items, {}, {})
+    TodoScreen(items, null, {}, {}, {}, {}, {})
 }
 
 @Preview
