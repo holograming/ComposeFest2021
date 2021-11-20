@@ -31,12 +31,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import com.example.compose.rally.ui.components.RallyTabRow
 import com.example.compose.rally.ui.theme.RallyTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.compose.rally.data.UserData
 import com.example.compose.rally.data.UserData.accounts
 import com.example.compose.rally.data.UserData.bills
@@ -95,6 +98,21 @@ fun RallyApp() {
                 }
                 composable(RallyScreen.Bills.name){
                     BillsBody(bills = UserData.bills)
+                }
+                // Deep link
+                val accountsName = RallyScreen.Accounts.name
+                composable(
+                    "$accountsName/{name}",
+                    arguments = listOf(
+                        navArgument("name") {
+                            type = NavType.StringType
+                        },
+                    ),
+                    deepLinks =  listOf(navDeepLink {
+                        uriPattern = "rally://$accountsName/{name}"
+                    })
+                ){
+
                 }
             }
         }
